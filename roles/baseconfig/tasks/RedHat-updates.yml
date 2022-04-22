@@ -1,0 +1,8 @@
+---
+# tasks file for debian updates - endormoon base
+
+- name: update all the packages
+  yum:
+    name: "*"
+    state: latest
+  become: true

@@ -1,0 +1,10 @@
+---
+# RedHat tasks for endorbase role
+
+- name: Install Endormoon Base Packages
+  package:
+    name:
+      - epel-release
+      - vim
+    state: present
+  become: true

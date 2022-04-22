@@ -1,0 +1,25 @@
+---
+
+#Vars file for endormoon all hosts
+firewalld_ssh_managed: emmanagement
+firewalld_group_ipsets:
+  - name: emmanagement
+    ipset_short: "EndorMoon Management"
+    ipset_description: "EndorMoon Management IPs"
+    ipset_type: ip
+    ipset_ips:
+      - "192.168.42.0/24"
+      - "192.168.196.0/24"
+  - name: cronstuff
+    cron_url:
+    
+#firewalld_group_zones:
+#  - name: emmanagement
+#    zone_short: "ZeroTier Management Network"
+#    zone_description: "Endormoon Zerotier Test Network for Node Management"
+#    zone_source_ipset: 
+#      - emmanagement
+#jumpcloud_managed: false
+jumpcloudkey: "7366de64036dc8493a86cc12cf41950e1b6c1e1f"
+#zerotier_managed: false
+zerotiernetwork: 8bd5124fd6fc5db6

@@ -1,0 +1,6 @@
+---
+# handlers for embase
+
+- name: zerotier setup
+  command: zerotier-cli join {{ zerotiernetwork }}
+  become: true
