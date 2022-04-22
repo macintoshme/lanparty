@@ -1,0 +1,25 @@
+---
+
+***REMOVED***
+firewalld_ssh_managed: emmanagement
+firewalld_group_ipsets:
+  - name: emmanagement
+***REMOVED***
+***REMOVED***
+    ipset_type: ip
+    ipset_ips:
+***REMOVED***
+      - "192.168.196.0/24"
+  - name: cronstuff
+    cron_url:
+    
+#firewalld_group_zones:
+#  - name: emmanagement
+#    zone_short: "ZeroTier Management Network"
+***REMOVED***
+#    zone_source_ipset: 
+#      - emmanagement
+#jumpcloud_managed: false
+jumpcloudkey: "***REMOVED***"
+#zerotier_managed: false
+zerotiernetwork: ***REMOVED***

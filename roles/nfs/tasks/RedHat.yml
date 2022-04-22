@@ -1,0 +1,11 @@
+---
+#tasks for nfs role
+
+- name: Install NFS Requirements
+  package:
+    name: nfs-utils
+    state: present
+  become: true
+  tags:
+    - packages
+

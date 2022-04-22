@@ -1,0 +1,18 @@
+---
+#tasks for nfs role
+
+- name: Include Distro Independant actions (packages)
+  include_tasks: "{{ ansible_os_family}}.yml"
+
+- name: Setup NFS Mounts
+  mount:
+    path: "{{ item.localmountpoint }}"
+    src: "{{ item.source }}:{{ item.remotemountpoint }}"
+    fstype: nfs
+    opts: "{{ item.opts|default('auto,nofail,noatime,nolock,intr,actimeo=1800') }}"
+    state: mounted
+  become: true
+  with_items: "{{ nfs_mounts }}"
+  tags:
+    - mounts
+    - nfs

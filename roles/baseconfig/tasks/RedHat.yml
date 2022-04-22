@@ -1,0 +1,10 @@
+---
+***REMOVED***
+
+***REMOVED***
+  package:
+    name:
+      - epel-release
+      - vim
+    state: present
+  become: true

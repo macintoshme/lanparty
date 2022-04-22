@@ -1,0 +1,73 @@
+---
+# tasks for baseconfig
+
+- name: Set Hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+  become: true
+
+- name: Install Jumpcloud
+  become: true
+  block:
+    - name: jcprequisites
+      package:
+        name: curl
+        state: present
+      tags:
+        - packages
+
+    - name: Install JumpCloud
+      shell: "curl --tlsv1.2 --silent --show-error --header 'x-connect-key: ***REMOVED***' https://kickstart.jumpcloud.com/Kickstart | sudo bash"
+      args:
+        creates: /etc/cron.d/jumpcloud-updater
+        warn: false
+      tags:
+        - jumpcloud
+  when: jumpcloud_managed|bool
+
+- name: Install ZeroTier
+  become: true
+  block:
+    - name: zt prequisites
+      package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - gpg
+        - curl
+      tags:
+         - packages
+
+    - name: Install ZeroTier
+      shell: "curl -s 'https://raw.githubusercontent.com/zerotier/ZeroTierOne/master/doc/contact%40zerotier.com.gpg' | gpg --import && if z=$(curl -s 'https://install.zerotier.com/' | gpg); then echo \"$z\" | sudo bash; fi"
+      args:
+        creates: /etc/systemd/system/multi-user.target.wants/zerotier-one.service
+        warn: false
+      notify: zerotier setup
+      tags:
+        - zerotier
+  when: zerotier_managed|bool
+
+- name: Distribition specific tasks
+  include_tasks: "{{ ansible_os_family}}.yml"
+
+- name: Including Updates
+  include_tasks: "{{ ansible_os_family}}-updates.yml"
+  when: update|bool
+  tags: update
+
+- name: Include NFS Role
+  include_role:
+    name: nfs
+  when: nfs_role | default ('false') |bool
+
+- name: Include Docker Role
+  include_role:
+    name: docker
+  when: docker_role | default('false') | bool
+
+- name: Include Kubernetes Role
+  include_role:
+    name: kubernetes
+  when: kubernetes_role | default('false') | bool
+

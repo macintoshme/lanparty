@@ -1,0 +1,12 @@
+---
+***REMOVED***
+
+- name: update all the packages
+  apt:
+    upgrade: dist
+  become: true
+  register: result
+  until: result is not failed
+  retries: 40
+  delay: 20
+  tags: update

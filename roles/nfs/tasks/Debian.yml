@@ -1,0 +1,10 @@
+---
+#tasks for nfs role - Debian
+
+- name: Install NFS Requirements
+  package:
+    name: nfs-common
+    state: present
+  become: true
+  tags:
+    - packages
