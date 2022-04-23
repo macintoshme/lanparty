@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: lancache
+  namespace: lancache
+  labels:
+    k8s-app: lancache
+spec:
+  selector:
+    matchLabels:
+      name: lancache
+  template:
+    metadata:
+      labels:
+        name: lancache
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: lancache-cache
+        persistentVolumeClaim:
+          claimName: lancache-cache
+      - name: lancache-logs
+        emptyDir: {}
+      containers:
+      - name: lancachemonolithic
+        image: lancachenet/monolithic:latest
+        volumeMounts:
+        - mountPath: /data/cache
+          name: lancache-cache
+        - mountPath: /data/logs
+          name: lancache-logs
+        env:
+        - name: CACHE_DISK_SIZE
+          value: "4500000m"
+        - name: CACHE_INDEX_SIZE
+          value: "1125m"
+        ports:
+        - containerPort: 80
+          hostPort: 80
+          name: http-proxy
+          protocol: TCP
+        - containerPort: 443
+          hostPort: 443
+          name: https-proxy
+          protocol: TCP
+      - name: lancachedns
+        image: lancachenet/lancache-dns:latest
+        env:
+        - name: LANCACHE_IP
+          value: "192.168.32.170"
+        - name: USE_GENERIC_CACHE
+          value: "true"
+        ports:
+        - containerPort: 53
+          hostPort: 53
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 53
+          hostPort: 53
+          name: dns-udp
+          protocol: UDP
+      - name: lancachelogs
+        image: mthenw/frontail
+        args: ["-t", "dark","--ui-highlight MISS", " /logs/access.log"]
+        volumeMounts:
+        - mountPath: /logs
+          name: lancache-logs
+        ports:
+        - containerPort: 9001
+          hostPort: 9001
+          name: frontail
+          protocol: TCP

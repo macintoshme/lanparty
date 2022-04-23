@@ -1,0 +1,87 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: omada
+  namespace: omada
+  labels:
+    k8s-app: omada
+spec:
+  selector:
+    matchLabels:
+      name: omada
+  template:
+    metadata:
+      labels:
+        name: omada
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: omada-data
+        persistentVolumeClaim:
+          claimName: omada-data
+      - name: omada-work
+        persistentVolumeClaim:
+          claimName: omada-work
+      - name: omada-logs
+        persistentVolumeClaim:
+          claimName: omada-logs
+      containers:
+      - name: omada-controller
+        image: mbentley/omada-controller:5.1
+        volumeMounts:
+        - mountPath: /opt/tplink/EAPController/data
+          name: omada-data
+        - mountPath: /opt/tplink/EAPController/work
+          name: omada-work
+        - mountPath: /opt/tplink/EAPController/logs
+          name: omada-logs
+        env:
+        - name: MANAGE_HTTP_PORT
+          value: "8088"
+        - name: MANAGE_HTTPS_PORT
+          value: "8043"
+        - name: PORTAL_HTTP_PORT
+          value: "8088"
+        - name: PORTAL_HTTPS_PORT
+          value: "8043"
+        - name: TZ
+          value: America/Los_Angeles
+        ports:
+        - containerPort: 8088
+          hostPort: 8088
+          name: omada-http
+          protocol: TCP
+        - containerPort: 8043
+          hostPort: 8043
+          name: omada-https
+          protocol: TCP
+        - containerPort: 8843
+          hostPort: 8843
+          name: omada-portal
+          protocol: TCP
+        - containerPort: 29810
+          hostPort: 29810
+          name: omada1
+          protocol: UDP
+        - containerPort: 29811
+          hostPort: 29811
+          name: omada2
+          protocol: TCP
+        - containerPort: 29812
+          hostPort: 29812
+          name: omada3
+          protocol: TCP
+        - containerPort: 29813
+          hostPort: 29813
+          name: omada4
+          protocol: TCP
+        - containerPort: 29814
+          hostPort: 29814
+          name: omada5
+          protocol: TCP
