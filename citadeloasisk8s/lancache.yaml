@@ -1,4 +1,20 @@
 ---
+apiVersion: v1
+data:
+  default.json: |
+    {
+    "words":{
+    },
+    "lines": {
+    "MISS": "color: red;",
+    "HIT": "color: green;"
+    }
+    }
+kind: ConfigMap
+metadata:
+  name: frontail
+  namespace: lancache
+---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -27,6 +43,9 @@ spec:
           claimName: lancache-cache
       - name: lancache-logs
         emptyDir: {}
+      - name: frontail-config
+        configMap:
+          name: frontail
       containers:
       - name: lancachemonolithic
         image: lancachenet/monolithic:latest
@@ -67,10 +86,16 @@ spec:
           protocol: UDP
       - name: lancachelogs
         image: mthenw/frontail
-        args: ["-t", "dark","--ui-highlight MISS", " /logs/access.log"]
+        args:
+        - "-t dark"
+        - "--ui-highlight"
+        - "--ui-highlight-preset /nginx/default.json"
+        - "/logs/access.log"
         volumeMounts:
         - mountPath: /logs
           name: lancache-logs
+        - mountPath: /nginx
+          name: frontail-config
         ports:
         - containerPort: 9001
           hostPort: 9001
