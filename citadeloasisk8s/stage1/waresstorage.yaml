@@ -24,7 +24,28 @@ spec:
           operator: In
           values:
           - linux
-
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wares-config
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Delete
+  local:
+    path: /waresconfig
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/os
+          operator: In
+          values:
+          - linux
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -39,3 +60,17 @@ spec:
     requests:
       storage: 10Gi
   volumeName: wares-volume
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wares-config
+  namespace: wares
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: wares-config
