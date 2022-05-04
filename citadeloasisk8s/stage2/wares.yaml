@@ -1,0 +1,57 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: wares
+  namespace: wares
+  labels:
+    k8s-app: wares
+spec:
+  selector:
+    matchLabels:
+      name: wares
+  template:
+    metadata:
+      labels:
+        name: wares
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: wares
+        persistentVolumeClaim:
+          claimName: wares-data
+      - name: wares-config
+        persistentVolumeClaim:
+          claimName: wares-config
+      containers:
+      - name: nginx
+        image: mohamnag/nginx-file-browser
+        volumeMounts:
+        - mountPath: /opt/www/files/
+          name: wares
+        ports:
+        - containerPort: 80
+          hostPort: 81
+          name: nginx-http
+          protocol: TCP
+        - containerPort: 443
+          hostPort: 444
+          name: nginx-https
+          protocol: TCP
+      - name: fileupload
+        image: hurlenko/filebrowser
+        ports:
+        - containerPort: 8080
+          hostPort: 8080
+          name: filebrowser
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /data
+          name: wares
+        - mountPath: /config
+          name: wares-config
