@@ -9,13 +9,13 @@ metadata:
   name: wares-volume
 spec:
   capacity:
-    storage: 10Gi
+    storage: 950Gi
   volumeMode: Filesystem
   accessModes:
   - ReadWriteOnce
   persistentVolumeReclaimPolicy: Delete
   local:
-    path: /wares
+    path: /ssdraid1
   nodeAffinity:
     required:
       nodeSelectorTerms:
@@ -58,7 +58,7 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 10Gi
+      storage: 950Gi
   volumeName: wares-volume
 ---
 apiVersion: v1
