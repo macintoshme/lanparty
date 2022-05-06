@@ -29,7 +29,7 @@ spec:
       hostNetwork: true
       containers:
       - name: dhcpserver
-        image: networkboot/dhcpd
+        image: networkboot/dhcpd:latest
         volumeMounts:
         - mountPath: /data
           name: dhcp-data
