@@ -6,7 +6,7 @@ metadata:
   name: dhcp
   namespace: dhcp 
   labels:
-    k8s-app: networkboot/dhcpd
+    k8s-app: dhcp
 spec:
   selector:
     matchLabels:
