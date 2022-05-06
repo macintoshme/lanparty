@@ -6,7 +6,7 @@ metadata:
   name: dhcp
   namespace: dhcp 
   labels:
-    k8s-app: lancache
+    k8s-app: networkboot/dhcpd
 spec:
   selector:
     matchLabels:
@@ -32,4 +32,4 @@ spec:
         image: networkboot/dhcpd
         volumeMounts:
         - mountPath: /data
-          name: lancache-cache
+          name: dhcp-data
