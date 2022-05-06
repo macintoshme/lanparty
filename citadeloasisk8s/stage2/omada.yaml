@@ -31,6 +31,7 @@ spec:
       - name: omada-logs
         persistentVolumeClaim:
           claimName: omada-logs
+      hostNetwork: true
       containers:
       - name: omada-controller
         image: mbentley/omada-controller:5.1
@@ -52,36 +53,3 @@ spec:
           value: "8843"
         - name: TZ
           value: America/Los_Angeles
-        ports:
-        - containerPort: 8088
-          hostPort: 8088
-          name: omada-http
-          protocol: TCP
-        - containerPort: 8043
-          hostPort: 8043
-          name: omada-https
-          protocol: TCP
-        - containerPort: 8843
-          hostPort: 8843
-          name: omada-portal
-          protocol: TCP
-        - containerPort: 29810
-          hostPort: 29810
-          name: omada1
-          protocol: UDP
-        - containerPort: 29811
-          hostPort: 29811
-          name: omada2
-          protocol: TCP
-        - containerPort: 29812
-          hostPort: 29812
-          name: omada3
-          protocol: TCP
-        - containerPort: 29813
-          hostPort: 29813
-          name: omada4
-          protocol: TCP
-        - containerPort: 29814
-          hostPort: 29814
-          name: omada5
-          protocol: TCP
