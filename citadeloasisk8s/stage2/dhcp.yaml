@@ -1,0 +1,35 @@
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: dhcp
+  namespace: dhcp 
+  labels:
+    k8s-app: lancache
+spec:
+  selector:
+    matchLabels:
+      name: dhcp
+  template:
+    metadata:
+      labels:
+        name: dhcp
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: dhcp-data
+        persistentVolumeClaim:
+          claimName: dhcp-data
+      hostNetwork: true
+      containers:
+      - name: dhcpserver
+        image: networkboot/dhcpd
+        volumeMounts:
+        - mountPath: /data
+          name: lancache-cache
