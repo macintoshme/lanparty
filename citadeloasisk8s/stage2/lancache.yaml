@@ -62,26 +62,50 @@ spec:
         ports:
         - containerPort: 80
           hostPort: 80
+          hostIP: 192.168.84.2
           name: http-proxy
           protocol: TCP
         - containerPort: 443
           hostPort: 443
+          hostIP: 192.168.84.2
           name: https-proxy
           protocol: TCP
-      - name: lancachedns
+      - name: lancachednspihole1
         image: lancachenet/lancache-dns:latest
         env:
         - name: LANCACHE_IP
-          value: "192.168.32.170"
+          value: "192.168.84.2"
+        - name: USE_GENERIC_CACHE
+          value: "true"
+        - name: UPSTREAM_DNS
+          value: 192.168.84.3
+        ports:
+        - containerPort: 53
+          hostPort: 53
+          hostIP: 192.168.84.4
+          name: dns-tcp
+          protocol: TCP
+        - containerPort: 53
+          hostPort: 53
+          hostIP: 192.168.84.3
+          name: dns-udp
+          protocol: UDP
+      - name: lancachednsgoogle1
+        image: lancachenet/lancache-dns:latest
+        env:
+        - name: LANCACHE_IP
+          value: "192.168.84.2"
         - name: USE_GENERIC_CACHE
           value: "true"
         ports:
         - containerPort: 53
           hostPort: 53
+          hostIP: 192.168.84.5
           name: dns-tcp
           protocol: TCP
         - containerPort: 53
           hostPort: 53
+          hostIP: 192.168.84.5
           name: dns-udp
           protocol: UDP
       - name: lancachelogs
