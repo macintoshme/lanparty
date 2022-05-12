@@ -40,6 +40,8 @@ spec:
           value: 'America/Los_Angeles'
         - name: WEBPASSWORD
           value: citadeloasis
+        - name: WEB_PORT
+          value: "82"
         - name: DHCP_ACTIVE
           value: true
         - name: DHCP_START
