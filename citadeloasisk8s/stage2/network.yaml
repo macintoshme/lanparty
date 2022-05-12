@@ -42,7 +42,7 @@ spec:
         - name: WEB_PORT
           value: "82"
         - name: DHCP_ACTIVE
-          value: true
+          value: "true"
         - name: DHCP_START
           value: 192.168.84.100
         - name: DHCP_END
@@ -50,7 +50,7 @@ spec:
         - name: DHCP_ROUTER
           value: 192.168.84.1
         - name: DHCP_LEASETIME
-          value: 1
+          value: "1"
         volumeMounts:
         - mountPath: /etc/pihole
           name: etc-pihole
