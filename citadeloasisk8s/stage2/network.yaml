@@ -1,0 +1,58 @@
+
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: network
+  namespace: network 
+  labels:
+    k8s-app: network
+spec:
+  selector:
+    matchLabels:
+      name: network
+  template:
+    metadata:
+      labels:
+        name: network
+    spec:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      volumes:
+      - name: etc-pihole
+        persistentVolumeClaim:
+          claimName: etc-pihole
+      - name: etc-dnsmasq-d
+        persistentVolumeClaim:
+          claimName: etc-dnsmasq-d
+      hostNetwork: true
+      containers:
+      - name: pihole
+        image: pihole/pihole:latest
+        hostNetwork: true
+        hostIP: 192.168.84.3
+        env:
+        - name: TZ
+          value: 'America/Los_Angeles'
+        - name: WEBPASSWORD
+          value: citadeloasis
+        - name: DHCP_ACTIVE
+          value: true
+        - name: DHCP_START
+          value: 192.168.84.100
+        - name: DHCP_END
+          value: 192.168.84.200
+        - name: DHCP_ROUTER
+          value: 192.168.84.1
+        - name: DHCP_LEASETIME
+          value: 1
+        volumeMounts:
+        - mountPath: /etc/pihole
+          name: etc-pihole
+        - mountPath: /etc/dnsmasq.d
+          name: etc-dnsmasq-d
+
