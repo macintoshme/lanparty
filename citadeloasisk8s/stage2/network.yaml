@@ -33,7 +33,6 @@ spec:
       containers:
       - name: pihole
         image: pihole/pihole:latest
-        hostNetwork: true
         hostIP: 192.168.84.3
         env:
         - name: TZ
